@@ -52,8 +52,6 @@ function initDonationSystem() {
     // Amount selection
     const amountOptions = document.querySelectorAll('.amount-option');
     const customAmountInput = document.querySelector('.custom-amount');
-    const activeAmount = document.querySelector('.amount-option.active')?.getAttribute('data-amount');
-    if (activeAmount) updateDonationButton(activeAmount);
     
     amountOptions.forEach(option => {
         option.addEventListener('click', function() {
@@ -111,6 +109,9 @@ function initDonationSystem() {
             processDonation();
         });
     }
+
+    const activeAmount = document.querySelector('.amount-option.active')?.getAttribute('data-amount');
+    if (activeAmount) updateDonationButton(activeAmount);
 }
 
 // Child profile search and filter
@@ -167,8 +168,17 @@ function updateDonationButton(amount) {
     const donateButton = document.getElementById('donateButton');
     if (donateButton && amount) {
         const amountText = amount ? `Donate $${amount} Now` : 'Donate Securely Now';
-        donateButton.innerHTML = `<i class="fas fa-lock"></i> ${amountText}`;
+        setButtonWithIcon(donateButton, 'fas fa-lock', amountText);
     }
+}
+
+function setButtonWithIcon(button, iconClass, label) {
+    if (!button) return;
+    button.textContent = '';
+    const icon = document.createElement('i');
+    icon.className = iconClass;
+    button.appendChild(icon);
+    button.appendChild(document.createTextNode(` ${label}`));
 }
 
 function updatePaymentDetails(methodType) {
@@ -241,8 +251,7 @@ function processDonation() {
     
     // Show loading state
     const donateButton = document.getElementById('donateButton');
-    const originalText = donateButton.innerHTML;
-    donateButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    setButtonWithIcon(donateButton, 'fas fa-spinner fa-spin', 'Processing...');
     donateButton.disabled = true;
     
     // Simulate API call
@@ -254,13 +263,19 @@ function processDonation() {
         showDonationModal(fullname, email, amount, referenceNumber, donationType);
         
         // Reset button
-        donateButton.innerHTML = originalText;
+        setButtonWithIcon(donateButton, 'fas fa-lock', 'Donate Securely Now');
         donateButton.disabled = false;
         
         // Reset form (in a real implementation, you might not want to do this)
         document.getElementById('fullname').value = '';
         document.getElementById('email').value = '';
         document.querySelector('.custom-amount').value = '';
+        document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('active'));
+        const firstAmount = document.querySelector('.amount-option[data-amount="25"]');
+        if (firstAmount) {
+            firstAmount.classList.add('active');
+            updateDonationButton('25');
+        }
         
         // Log donation for analytics (simulated)
         console.log(`Donation processed: $${amount} by ${fullname} for ${donationType}`);
@@ -507,7 +522,8 @@ function animateStats() {
 
         const prefix = originalText.slice(0, numberMatch.index);
         const suffix = originalText.slice((numberMatch.index || 0) + numberMatch[0].length);
-        const decimalPlaces = numericPart.includes('.') ? numericPart.split('.')[1].length : 0;
+        const decimalMatch = numericPart.match(/\.(\d+)/);
+        const decimalPlaces = decimalMatch ? decimalMatch[1].length : 0;
         const duration = 2000; // 2 seconds
         const increment = target / (duration / 16); // 60fps
         
@@ -535,15 +551,28 @@ function showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas ${getNotificationIcon(type)}"></i>
-            <span>${message}</span>
-        </div>
-        <button class="notification-close" aria-label="Close notification">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
+
+    const content = document.createElement('div');
+    content.className = 'notification-content';
+
+    const statusIcon = document.createElement('i');
+    statusIcon.className = `fas ${getNotificationIcon(type)}`;
+
+    const text = document.createElement('span');
+    text.textContent = message;
+
+    const closeButton = document.createElement('button');
+    closeButton.className = 'notification-close';
+    closeButton.setAttribute('aria-label', 'Close notification');
+
+    const closeIcon = document.createElement('i');
+    closeIcon.className = 'fas fa-times';
+
+    content.appendChild(statusIcon);
+    content.appendChild(text);
+    closeButton.appendChild(closeIcon);
+    notification.appendChild(content);
+    notification.appendChild(closeButton);
     
     // Add styles
     notification.style.cssText = `
@@ -601,8 +630,7 @@ function showNotification(message, type = 'info') {
     }
     
     // Add close functionality
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.addEventListener('click', function() {
+    closeButton.addEventListener('click', function() {
         notification.style.animation = 'fadeOut 0.3s ease';
         setTimeout(() => {
             notification.remove();
