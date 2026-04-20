@@ -111,7 +111,12 @@ function initDonationSystem() {
         });
     }
 
-    const activeAmount = document.querySelector('.amount-option.active')?.getAttribute('data-amount');
+    let activeOption = document.querySelector('.amount-option.active');
+    if (!activeOption) {
+        activeOption = document.querySelector(`.amount-option[data-amount="${DEFAULT_DONATION_AMOUNT}"]`);
+        if (activeOption) activeOption.classList.add('active');
+    }
+    const activeAmount = activeOption?.getAttribute('data-amount');
     if (activeAmount) updateDonationButton(activeAmount);
 }
 
@@ -542,7 +547,9 @@ function animateStats() {
 }
 
 function formatNumberWithCommas(value) {
-    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const [integerPart, decimalPart] = String(value).split('.');
+    const formattedInteger = Number(integerPart).toLocaleString('en-US');
+    return decimalPart !== undefined ? `${formattedInteger}.${decimalPart}` : formattedInteger;
 }
 
 // Notification System
