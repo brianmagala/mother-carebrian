@@ -111,13 +111,7 @@ function initDonationSystem() {
         });
     }
 
-    let activeOption = document.querySelector('.amount-option.active');
-    if (!activeOption) {
-        activeOption = document.querySelector(`.amount-option[data-amount="${DEFAULT_DONATION_AMOUNT}"]`);
-        if (activeOption) activeOption.classList.add('active');
-    }
-    const activeAmount = activeOption?.getAttribute('data-amount');
-    if (activeAmount) updateDonationButton(activeAmount);
+    setDefaultDonationAmount();
 }
 
 // Child profile search and filter
@@ -175,6 +169,15 @@ function updateDonationButton(amount) {
     if (donateButton && amount) {
         const amountText = amount ? `Donate $${amount} Now` : 'Donate Securely Now';
         setButtonWithIcon(donateButton, 'fas fa-lock', amountText);
+    }
+}
+
+function setDefaultDonationAmount() {
+    document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('active'));
+    const defaultOption = document.querySelector(`.amount-option[data-amount="${DEFAULT_DONATION_AMOUNT}"]`);
+    if (defaultOption) {
+        defaultOption.classList.add('active');
+        updateDonationButton(DEFAULT_DONATION_AMOUNT);
     }
 }
 
@@ -269,19 +272,13 @@ function processDonation() {
         showDonationModal(fullname, email, amount, referenceNumber, donationType);
         
         // Reset button
-        updateDonationButton(DEFAULT_DONATION_AMOUNT);
         donateButton.disabled = false;
         
         // Reset form (in a real implementation, you might not want to do this)
         document.getElementById('fullname').value = '';
         document.getElementById('email').value = '';
         document.querySelector('.custom-amount').value = '';
-        document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('active'));
-        const firstAmount = document.querySelector(`.amount-option[data-amount="${DEFAULT_DONATION_AMOUNT}"]`);
-        if (firstAmount) {
-            firstAmount.classList.add('active');
-            updateDonationButton(DEFAULT_DONATION_AMOUNT);
-        }
+        setDefaultDonationAmount();
         
         // Log donation for analytics (simulated)
         console.log(`Donation processed: $${amount} by ${fullname} for ${donationType}`);
