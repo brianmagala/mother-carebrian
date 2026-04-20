@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScrolling();
     initAccessibility();
     initModal();
+    initProfileFilters();
+    initFaqAccordion();
     
     // Add animation to stats counter
     animateStats();
@@ -50,6 +52,8 @@ function initDonationSystem() {
     // Amount selection
     const amountOptions = document.querySelectorAll('.amount-option');
     const customAmountInput = document.querySelector('.custom-amount');
+    const activeAmount = document.querySelector('.amount-option.active')?.getAttribute('data-amount');
+    if (activeAmount) updateDonationButton(activeAmount);
     
     amountOptions.forEach(option => {
         option.addEventListener('click', function() {
@@ -107,6 +111,56 @@ function initDonationSystem() {
             processDonation();
         });
     }
+}
+
+// Child profile search and filter
+function initProfileFilters() {
+    const searchInput = document.getElementById('childSearch');
+    const regionFilter = document.getElementById('regionFilter');
+    const profileCards = document.querySelectorAll('.profile-card');
+
+    if (!searchInput || !regionFilter || profileCards.length === 0) return;
+
+    const applyFilters = () => {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        const selectedRegion = regionFilter.value;
+
+        profileCards.forEach(card => {
+            const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            const region = card.getAttribute('data-region') || '';
+            const needs = card.getAttribute('data-needs') || '';
+
+            const matchesSearch = !searchTerm || name.includes(searchTerm) || needs.includes(searchTerm);
+            const matchesRegion = selectedRegion === 'all' || selectedRegion === region;
+            card.style.display = matchesSearch && matchesRegion ? '' : 'none';
+        });
+    };
+
+    searchInput.addEventListener('input', applyFilters);
+    regionFilter.addEventListener('change', applyFilters);
+}
+
+// FAQ accordion
+function initFaqAccordion() {
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    if (faqQuestions.length === 0) return;
+
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+            faqQuestions.forEach(item => {
+                item.setAttribute('aria-expanded', 'false');
+                if (item.nextElementSibling) item.nextElementSibling.classList.remove('active');
+            });
+
+            if (!isExpanded && answer) {
+                this.setAttribute('aria-expanded', 'true');
+                answer.classList.add('active');
+            }
+        });
+    });
 }
 
 function updateDonationButton(amount) {
@@ -443,8 +497,17 @@ function animateStats() {
     const statNumbers = document.querySelectorAll('.stat-number');
     
     statNumbers.forEach(stat => {
-        const target = parseInt(stat.textContent);
-        const suffix = stat.textContent.replace(/[0-9]/g, '');
+        const originalText = stat.textContent.trim();
+        const numberMatch = originalText.match(/[\d,.]+/);
+        if (!numberMatch) return;
+
+        const numericPart = numberMatch[0].replace(/,/g, '');
+        const target = parseFloat(numericPart);
+        if (Number.isNaN(target)) return;
+
+        const prefix = originalText.slice(0, numberMatch.index);
+        const suffix = originalText.slice((numberMatch.index || 0) + numberMatch[0].length);
+        const decimalPlaces = numericPart.includes('.') ? numericPart.split('.')[1].length : 0;
         const duration = 2000; // 2 seconds
         const increment = target / (duration / 16); // 60fps
         
@@ -455,7 +518,8 @@ function animateStats() {
                 current = target;
                 clearInterval(timer);
             }
-            stat.textContent = Math.floor(current) + suffix;
+            const formatted = current.toFixed(decimalPlaces).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            stat.textContent = `${prefix}${formatted}${suffix}`;
         }, 16);
     });
 }

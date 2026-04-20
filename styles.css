@@ -209,7 +209,7 @@ header {
 .logo-img {
     width: 60px;
     height: 60px;
-    background: var(--gradient-dark-green);
+    background: var(--gradient-cool);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -311,11 +311,59 @@ nav ul li a:after {
     font-size: 1.1rem;
 }
 
+.hero .btn-outline {
+    border-color: rgba(255, 255, 255, 0.8);
+    color: white;
+}
+
+.hero .btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
 /* Stats Section */
 .stats {
     background-color: var(--light);
     padding: 70px 0;
     text-align: center;
+}
+
+.trust-strip {
+    background-color: white;
+    border-bottom: 1px solid #e9ecef;
+    border-top: 1px solid #e9ecef;
+}
+
+.trust-strip-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f8fafc;
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.trust-item i {
+    font-size: 1.6rem;
+    color: var(--primary);
+}
+
+.trust-item h3 {
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.trust-item p {
+    margin-bottom: 0;
+    color: #5f6c7b;
+    font-size: 0.9rem;
 }
 
 .stats-container {
@@ -468,6 +516,33 @@ nav ul li a:after {
     gap: 30px;
 }
 
+.children-controls {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.search-input,
+.region-filter {
+    position: relative;
+}
+
+.search-input i,
+.region-filter i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7a8695;
+}
+
+.search-input .form-control,
+.region-filter .form-control {
+    padding-left: 42px;
+    margin-bottom: 0;
+}
+
 .profile-card {
     background-color: white;
     border-radius: var(--radius);
@@ -555,6 +630,42 @@ nav ul li a:after {
 /* Donation Section */
 .donation-section {
     background-color: var(--light);
+}
+
+.impact-section {
+    background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+
+.impact-timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.impact-step {
+    background-color: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid #e7edf4;
+    box-shadow: var(--shadow);
+    padding: 24px;
+}
+
+.impact-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 147, 150, 0.12);
+    color: var(--secondary);
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+}
+
+.impact-step p {
+    margin-bottom: 0;
+    color: #5f6c7b;
 }
 
 .donation-container {
@@ -748,6 +859,58 @@ nav ul li a:after {
     padding: 40px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
+}
+
+.faq-section {
+    background-color: var(--light);
+}
+
+.faq-list {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    gap: 15px;
+}
+
+.faq-item {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.faq-question {
+    width: 100%;
+    border: none;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.faq-question i {
+    color: var(--secondary);
+    transition: transform 0.3s ease;
+}
+
+.faq-question[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    display: none;
+    padding: 0 20px 20px;
+    color: #5f6c7b;
+}
+
+.faq-answer.active {
+    display: block;
 }
 
 .volunteer-form-container h3 {
@@ -1097,6 +1260,10 @@ footer {
 
     .programs-grid,
     .profiles-container {
+        grid-template-columns: 1fr;
+    }
+
+    .children-controls {
         grid-template-columns: 1fr;
     }
 
