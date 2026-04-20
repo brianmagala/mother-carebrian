@@ -1,4 +1,5 @@
 // Tuinaune Growth Environment - Main JavaScript File
+const DEFAULT_DONATION_AMOUNT = '25';
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all functionality
@@ -271,10 +272,10 @@ function processDonation() {
         document.getElementById('email').value = '';
         document.querySelector('.custom-amount').value = '';
         document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('active'));
-        const firstAmount = document.querySelector('.amount-option[data-amount="25"]');
+        const firstAmount = document.querySelector(`.amount-option[data-amount="${DEFAULT_DONATION_AMOUNT}"]`);
         if (firstAmount) {
             firstAmount.classList.add('active');
-            updateDonationButton('25');
+            updateDonationButton(DEFAULT_DONATION_AMOUNT);
         }
         
         // Log donation for analytics (simulated)
@@ -534,10 +535,14 @@ function animateStats() {
                 current = target;
                 clearInterval(timer);
             }
-            const formatted = current.toFixed(decimalPlaces).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            const formatted = formatNumberWithCommas(current.toFixed(decimalPlaces));
             stat.textContent = `${prefix}${formatted}${suffix}`;
         }, 16);
     });
+}
+
+function formatNumberWithCommas(value) {
+    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 // Notification System
