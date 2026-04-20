@@ -27,15 +27,17 @@
                 <i class="fas fa-bars"></i>
             </button>
             
-            <nav>
-                <ul id="mainMenu">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About Us</a></li>
-                    <li><a href="#programs">Programs</a></li>
-                    <li><a href="#children">Children</a></li>
-                    <li><a href="#donate" class="btn btn-secondary">Donate Now</a></li>
-                </ul>
-            </nav>
+             <nav>
+                 <ul id="mainMenu">
+                     <li><a href="#home">Home</a></li>
+                     <li><a href="#about">About Us</a></li>
+                     <li><a href="#programs">Programs</a></li>
+                     <li><a href="#children">Children</a></li>
+                     <li><a href="#impact">Impact</a></li>
+                     <li><a href="#faq">FAQ</a></li>
+                     <li><a href="#donate" class="btn btn-secondary">Donate Now</a></li>
+                 </ul>
+             </nav>
         </div>
     </header>
 
@@ -44,13 +46,14 @@
         <div class="container">
             <h1>Every Child Deserves a Safe and Nurturing Environment</h1>
             <p>Join us in supporting vulnerable children facing poverty, disabilities, abuse, homelessness, and health challenges. Your donation can transform a child's life today.</p>
-            <div class="hero-btns">
-                <a href="#donate" class="btn btn-secondary">Donate Now</a>
-                <a href="#children" class="btn">Sponsor a Child</a>
-                <a href="#volunteer" class="btn btn-accent">Become a Volunteer</a>
-            </div>
-        </div>
-    </section>
+             <div class="hero-btns">
+                 <a href="#donate" class="btn btn-secondary">Donate Now</a>
+                 <a href="#children" class="btn">Sponsor a Child</a>
+                 <a href="#volunteer" class="btn btn-accent">Become a Volunteer</a>
+                 <a href="#impact" class="btn btn-outline">View Impact</a>
+             </div>
+         </div>
+     </section>
 
     <!-- Stats Section -->
     <section class="stats">
@@ -70,6 +73,32 @@
             <div class="stat-item">
                 <div class="stat-number">98%</div>
                 <div class="stat-text">Funds to Programs</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-strip" aria-label="Trust indicators">
+        <div class="container trust-strip-container">
+            <div class="trust-item">
+                <i class="fas fa-certificate"></i>
+                <div>
+                    <h3>Certified Non-Profit</h3>
+                    <p>Registered and independently reviewed every year.</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <div>
+                    <h3>Quarterly Reports</h3>
+                    <p>Clear breakdown of program spending and outcomes.</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-user-shield"></i>
+                <div>
+                    <h3>Secure Giving</h3>
+                    <p>PCI-compliant payment partners and SSL-protected forms.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -154,15 +183,31 @@
     <!-- Children Profiles -->
     <section class="section" id="children">
         <div class="container">
-            <div class="section-title">
-                <h2>Children Needing Support</h2>
-                <p>Meet some of the children currently awaiting sponsorship and support. Each profile represents a unique story of resilience.</p>
-            </div>
-            
-            <div class="profiles-container">
-                <div class="profile-card">
-                    <div class="profile-img profile-maria"></div>
-                    <div class="profile-content">
+             <div class="section-title">
+                 <h2>Children Needing Support</h2>
+                 <p>Meet some of the children currently awaiting sponsorship and support. Each profile represents a unique story of resilience.</p>
+             </div>
+
+             <div class="children-controls">
+                 <div class="search-input">
+                     <i class="fas fa-search"></i>
+                     <input type="text" id="childSearch" class="form-control" placeholder="Search by child name or need">
+                 </div>
+                 <div class="region-filter">
+                     <i class="fas fa-globe-africa"></i>
+                     <select id="regionFilter" class="form-control">
+                         <option value="all">All Regions</option>
+                         <option value="kenya">Kenya</option>
+                         <option value="syria">Syria</option>
+                         <option value="philippines">Philippines</option>
+                     </select>
+                 </div>
+             </div>
+             
+             <div class="profiles-container">
+                 <div class="profile-card" data-region="kenya" data-needs="medical treatment school fees nutritional support">
+                     <div class="profile-img profile-maria"></div>
+                     <div class="profile-content">
                         <h3>Maria, 8 years old</h3>
                         <div class="profile-meta">
                             <span><i class="fas fa-map-marker-alt"></i> Kenya</span>
@@ -186,9 +231,9 @@
                     </div>
                 </div>
                 
-                <div class="profile-card">
-                    <div class="profile-img profile-ahmed"></div>
-                    <div class="profile-content">
+                 <div class="profile-card" data-region="syria" data-needs="prosthetic limb counseling school integration">
+                     <div class="profile-img profile-ahmed"></div>
+                     <div class="profile-content">
                         <h3>Ahmed, 6 years old</h3>
                         <div class="profile-meta">
                             <span><i class="fas fa-map-marker-alt"></i> Syria</span>
@@ -212,9 +257,9 @@
                     </div>
                 </div>
                 
-                <div class="profile-card">
-                    <div class="profile-img profile-sophie"></div>
-                    <div class="profile-content">
+                 <div class="profile-card" data-region="philippines" data-needs="school supplies housing assistance counseling">
+                     <div class="profile-img profile-sophie"></div>
+                     <div class="profile-content">
                         <h3>Sophie, 10 years old</h3>
                         <div class="profile-meta">
                             <span><i class="fas fa-map-marker-alt"></i> Philippines</span>
@@ -241,6 +286,37 @@
             
             <div class="text-center">
                 <a href="children.html" class="btn btn-secondary">View All Children Needing Support</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section impact-section" id="impact">
+        <div class="container">
+            <div class="section-title center">
+                <h2>Our Impact Journey</h2>
+                <p>From emergency care to long-term growth, we track and report outcomes across every stage of support.</p>
+            </div>
+            <div class="impact-timeline">
+                <div class="impact-step">
+                    <div class="impact-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <h3>Immediate Relief</h3>
+                    <p>Rapid shelter, food assistance, and urgent medical support for at-risk children.</p>
+                </div>
+                <div class="impact-step">
+                    <div class="impact-icon"><i class="fas fa-stethoscope"></i></div>
+                    <h3>Health Recovery</h3>
+                    <p>Clinical follow-up, nutrition plans, and mental wellness support for stable recovery.</p>
+                </div>
+                <div class="impact-step">
+                    <div class="impact-icon"><i class="fas fa-school"></i></div>
+                    <h3>Education Continuity</h3>
+                    <p>School fees, supplies, tutoring, and digital learning opportunities.</p>
+                </div>
+                <div class="impact-step">
+                    <div class="impact-icon"><i class="fas fa-people-arrows"></i></div>
+                    <h3>Community Reintegration</h3>
+                    <p>Family support, mentorship, and local partnerships to sustain long-term outcomes.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -353,6 +429,44 @@
         </div>
     </section>
 
+    <section class="section faq-section" id="faq">
+        <div class="container">
+            <div class="section-title center">
+                <h2>Frequently Asked Questions</h2>
+                <p>Quick answers to common donor and volunteer questions.</p>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>How much of my donation goes directly to programs?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We currently direct approximately 98% of funding to child-focused programs and support operations with dedicated overhead grants.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can I sponsor one child long-term?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Select “Sponsor a specific child” during checkout and our team will match your support plan and provide periodic progress updates.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Do you provide donation receipts for tax reporting?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely. Receipts are sent by email immediately after successful donations, with annual summaries shared to recurring donors.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Volunteer Section -->
     <section class="section" id="volunteer">
         <div class="container">
@@ -423,11 +537,12 @@
                 <ul class="footer-links">
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About Us</a></li>
-                    <li><a href="#programs">Our Programs</a></li>
-                    <li><a href="#children">Children Profiles</a></li>
-                    <li><a href="#donate">Donate Now</a></li>
-                    <li><a href="#volunteer">Volunteer</a></li>
-                </ul>
+                     <li><a href="#programs">Our Programs</a></li>
+                     <li><a href="#children">Children Profiles</a></li>
+                     <li><a href="#impact">Impact Journey</a></li>
+                     <li><a href="#donate">Donate Now</a></li>
+                     <li><a href="#volunteer">Volunteer</a></li>
+                 </ul>
             </div>
             
             <div class="footer-column">

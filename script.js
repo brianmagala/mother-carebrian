@@ -1,4 +1,5 @@
 // Tuinaune Growth Environment - Main JavaScript File
+const DEFAULT_DONATION_AMOUNT = '25';
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all functionality
@@ -10,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScrolling();
     initAccessibility();
     initModal();
+    initProfileFilters();
+    initFaqAccordion();
     
     // Add animation to stats counter
     animateStats();
@@ -107,14 +110,84 @@ function initDonationSystem() {
             processDonation();
         });
     }
+
+    setDefaultDonationAmount();
+}
+
+// Child profile search and filter
+function initProfileFilters() {
+    const searchInput = document.getElementById('childSearch');
+    const regionFilter = document.getElementById('regionFilter');
+    const profileCards = document.querySelectorAll('.profile-card');
+
+    if (!searchInput || !regionFilter || profileCards.length === 0) return;
+
+    const applyFilters = () => {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        const selectedRegion = regionFilter.value;
+
+        profileCards.forEach(card => {
+            const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            const region = card.getAttribute('data-region') || '';
+            const needs = (card.getAttribute('data-needs') || '').toLowerCase();
+
+            const matchesSearch = !searchTerm || name.includes(searchTerm) || needs.includes(searchTerm);
+            const matchesRegion = selectedRegion === 'all' || selectedRegion === region;
+            card.style.display = matchesSearch && matchesRegion ? '' : 'none';
+        });
+    };
+
+    searchInput.addEventListener('input', applyFilters);
+    regionFilter.addEventListener('change', applyFilters);
+}
+
+// FAQ accordion
+function initFaqAccordion() {
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    if (faqQuestions.length === 0) return;
+
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+            faqQuestions.forEach(item => {
+                item.setAttribute('aria-expanded', 'false');
+                if (item.nextElementSibling) item.nextElementSibling.classList.remove('active');
+            });
+
+            if (!isExpanded && answer) {
+                this.setAttribute('aria-expanded', 'true');
+                answer.classList.add('active');
+            }
+        });
+    });
 }
 
 function updateDonationButton(amount) {
     const donateButton = document.getElementById('donateButton');
     if (donateButton && amount) {
         const amountText = amount ? `Donate $${amount} Now` : 'Donate Securely Now';
-        donateButton.innerHTML = `<i class="fas fa-lock"></i> ${amountText}`;
+        setButtonWithIcon(donateButton, 'fas fa-lock', amountText);
     }
+}
+
+function setDefaultDonationAmount() {
+    document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('active'));
+    const defaultOption = document.querySelector(`.amount-option[data-amount="${DEFAULT_DONATION_AMOUNT}"]`);
+    if (defaultOption) {
+        defaultOption.classList.add('active');
+        updateDonationButton(DEFAULT_DONATION_AMOUNT);
+    }
+}
+
+function setButtonWithIcon(button, iconClass, label) {
+    if (!button) return;
+    button.textContent = '';
+    const icon = document.createElement('i');
+    icon.className = iconClass;
+    button.appendChild(icon);
+    button.appendChild(document.createTextNode(` ${label}`));
 }
 
 function updatePaymentDetails(methodType) {
@@ -187,8 +260,7 @@ function processDonation() {
     
     // Show loading state
     const donateButton = document.getElementById('donateButton');
-    const originalText = donateButton.innerHTML;
-    donateButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    setButtonWithIcon(donateButton, 'fas fa-spinner fa-spin', 'Processing...');
     donateButton.disabled = true;
     
     // Simulate API call
@@ -200,13 +272,13 @@ function processDonation() {
         showDonationModal(fullname, email, amount, referenceNumber, donationType);
         
         // Reset button
-        donateButton.innerHTML = originalText;
         donateButton.disabled = false;
         
         // Reset form (in a real implementation, you might not want to do this)
         document.getElementById('fullname').value = '';
         document.getElementById('email').value = '';
         document.querySelector('.custom-amount').value = '';
+        setDefaultDonationAmount();
         
         // Log donation for analytics (simulated)
         console.log(`Donation processed: $${amount} by ${fullname} for ${donationType}`);
@@ -443,8 +515,18 @@ function animateStats() {
     const statNumbers = document.querySelectorAll('.stat-number');
     
     statNumbers.forEach(stat => {
-        const target = parseInt(stat.textContent);
-        const suffix = stat.textContent.replace(/[0-9]/g, '');
+        const originalText = stat.textContent.trim();
+        const numberMatch = originalText.match(/[\d,.]+/);
+        if (!numberMatch) return;
+
+        const numericPart = numberMatch[0].replace(/,/g, '');
+        const target = parseFloat(numericPart);
+        if (Number.isNaN(target)) return;
+
+        const prefix = originalText.slice(0, numberMatch.index);
+        const suffix = originalText.slice(numberMatch.index + numberMatch[0].length);
+        const decimalMatch = numericPart.match(/\.(\d+)/);
+        const decimalPlaces = decimalMatch ? decimalMatch[1].length : 0;
         const duration = 2000; // 2 seconds
         const increment = target / (duration / 16); // 60fps
         
@@ -455,9 +537,16 @@ function animateStats() {
                 current = target;
                 clearInterval(timer);
             }
-            stat.textContent = Math.floor(current) + suffix;
+            const formatted = formatNumberWithCommas(current.toFixed(decimalPlaces));
+            stat.textContent = `${prefix}${formatted}${suffix}`;
         }, 16);
     });
+}
+
+function formatNumberWithCommas(value) {
+    const [integerPart, decimalPart] = String(value).split('.');
+    const formattedInteger = Number(integerPart).toLocaleString('en-US');
+    return decimalPart !== undefined ? `${formattedInteger}.${decimalPart}` : formattedInteger;
 }
 
 // Notification System
@@ -471,15 +560,28 @@ function showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas ${getNotificationIcon(type)}"></i>
-            <span>${message}</span>
-        </div>
-        <button class="notification-close" aria-label="Close notification">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
+
+    const content = document.createElement('div');
+    content.className = 'notification-content';
+
+    const statusIcon = document.createElement('i');
+    statusIcon.className = `fas ${getNotificationIcon(type)}`;
+
+    const text = document.createElement('span');
+    text.textContent = message;
+
+    const closeButton = document.createElement('button');
+    closeButton.className = 'notification-close';
+    closeButton.setAttribute('aria-label', 'Close notification');
+
+    const closeIcon = document.createElement('i');
+    closeIcon.className = 'fas fa-times';
+
+    content.appendChild(statusIcon);
+    content.appendChild(text);
+    closeButton.appendChild(closeIcon);
+    notification.appendChild(content);
+    notification.appendChild(closeButton);
     
     // Add styles
     notification.style.cssText = `
@@ -537,8 +639,7 @@ function showNotification(message, type = 'info') {
     }
     
     // Add close functionality
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.addEventListener('click', function() {
+    closeButton.addEventListener('click', function() {
         notification.style.animation = 'fadeOut 0.3s ease';
         setTimeout(() => {
             notification.remove();
