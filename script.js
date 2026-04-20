@@ -135,7 +135,7 @@ function initProfileFilters() {
         profileCards.forEach(card => {
             const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
             const region = card.getAttribute('data-region') || '';
-            const needs = card.getAttribute('data-needs') || '';
+            const needs = (card.getAttribute('data-needs') || '').toLowerCase();
 
             const matchesSearch = !searchTerm || name.includes(searchTerm) || needs.includes(searchTerm);
             const matchesRegion = selectedRegion === 'all' || selectedRegion === region;
@@ -269,7 +269,7 @@ function processDonation() {
         showDonationModal(fullname, email, amount, referenceNumber, donationType);
         
         // Reset button
-        setButtonWithIcon(donateButton, 'fas fa-lock', 'Donate Securely Now');
+        updateDonationButton(DEFAULT_DONATION_AMOUNT);
         donateButton.disabled = false;
         
         // Reset form (in a real implementation, you might not want to do this)
@@ -527,7 +527,7 @@ function animateStats() {
         if (Number.isNaN(target)) return;
 
         const prefix = originalText.slice(0, numberMatch.index);
-        const suffix = originalText.slice((numberMatch.index || 0) + numberMatch[0].length);
+        const suffix = originalText.slice(numberMatch.index + numberMatch[0].length);
         const decimalMatch = numericPart.match(/\.(\d+)/);
         const decimalPlaces = decimalMatch ? decimalMatch[1].length : 0;
         const duration = 2000; // 2 seconds
